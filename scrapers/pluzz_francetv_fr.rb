@@ -8,8 +8,8 @@ module FranceTVJeunesse
     url = "http://pluzz.francetv.fr/ajax/launchsearch/rubrique/jeunesse/datedebut/#{Time.now.strftime("%Y-%m-%dT00:00")}/datefin/#{Time.now.strftime("%Y-%m-%dT23:59")}/type/lesplusrecents/nb/100/"
     page = agent.get(url)
     episodes = fetch_episodes(page)
-    puts "success" unless episodes.find{|e| e.failed?}
-    episides
+    STDERR << "Error scraping #{url}" if episodes.find{|e| e.failed?}
+    episodes
   end
 
   def self.fetch_episodes(page)
