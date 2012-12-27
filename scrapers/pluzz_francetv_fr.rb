@@ -21,6 +21,7 @@ module FranceTVJeunesse
       episode.show_ref  = episode.fetch(e, "span[data-prog]", ->(el){ el.first.attributes['data-prog'].value})
       episode.title     = episode.fetch(e, "div.rs-cell-details", ->(el){ el.first.search("a.ss-titre").text.strip})
       episode.notes     = episode.fetch(e, "div.rs-cell-details", ->(el){ el.first.search("a.rs-ep-ss").text.strip})
+      episode.image_url = episode.fetch(e, "figure.rs-cell-image img", ->(el){ el.first.attributes["src"].value})
       episode
     end
     episodes
@@ -58,7 +59,7 @@ module FranceTVJeunesse
     end
 
     def failed?
-      if self.url.nil? || self.failures.size > 3
+      if self.url.nil? || !self.failures.empty?
         true
       else
         false

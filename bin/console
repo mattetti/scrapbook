@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+require 'bundler'
+Bundler.require
+require 'irb'
+
+STDOUT.sync = true
+
+# Require all the scrapers & processors
+Dir.glob("./scrapers/*.rb"){|file| require file }
+Dir.glob("./processors/*.rb"){|file| require file }
+
+FileUtils.mkdir_p('output')
+
+IRB.start(__FILE__)

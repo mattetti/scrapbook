@@ -14,7 +14,7 @@ class EpisodeSummary
     self.items = items
     if format == :html
       html_header + "\n" + \
-      items.map{|i| html_episode_summary(i)}.join("\n") + \
+      items.sort_by(&:show_name).map{|i| html_episode_summary(i)}.join("\n") + \
       html_footer
     elsif format == :json
       items.map(&:to_json)
@@ -43,7 +43,12 @@ class EpisodeSummary
     <<-EOS
       <li>
         <h2>#{item.show_name} - #{item.title}</h2>
-        <a href="#{item.url}">Link (#{item.notes})</a>
+        #{("<div><img href='#{item.url}' 
+                 src='" + item.image_url + 
+                "' /img></div>") if item.image_url}
+        <a href="#{item.url}">
+          #{(item.notes.nil? || item.notes == "") ? 'link' : item.notes }
+        </a>
       </li>
     EOS
   end

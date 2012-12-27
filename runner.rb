@@ -4,7 +4,7 @@ require 'fileutils'
 
 STDOUT.sync = true
 
-# Require all the scrapers
+# Require all the scrapers & processors
 Dir.glob("./scrapers/*.rb"){|file| require file }
 Dir.glob("./processors/*.rb"){|file| require file }
 
