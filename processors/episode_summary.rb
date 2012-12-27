@@ -13,11 +13,7 @@ module EpisodeSummary
   def process(items, format=:html)
     if format == :html
       output = html_header + "\n"
-      if items[0] && items[0].show_name
-        output += items.sort_by(&:show_name).map{|i| html_episode_summary(i)}.join("\n")
-      else
-        output += items.sort_by(&:title).map{|i| html_episode_summary(i)}.join("\n")
-      end
+      output += sorted_summaries(items, :show_name, :title).join("\n")
       output += html_footer
       output
     elsif format == :json
@@ -25,6 +21,14 @@ module EpisodeSummary
     else
      "Format #{format} not supported"
     end
+  end
+
+  def sorted_summaries(items, by_attribute, fallback=nil)
+    fallback_value = ->(item){ fallback ? item.send(fallback).to_s : 'zzzzzzzz' }
+    sorted = items.sort do |a,b| 
+      (a.show_name || fallback_value.call(a)) <=> (b.show_name || fallback_value.call(b))
+    end
+    sorted.map{|i| html_episode_summary(i) }
   end
 
   def html_header
