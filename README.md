@@ -32,6 +32,8 @@ many processors until it reaches its final form. If the data is meant to
 be persisted, the persistence layer should be implemented as a processor.
 Examples of processors are data extractors, event triggers, persistence
 layers etc...
+Processors are called via `#process` and are usually implemented as
+modules since they don't need to create instances or keep states.
 
 ### Design
 
@@ -39,3 +41,19 @@ Each unit should be autonomous, easy to test and chainable. Raised
 exceptions should really be exceptional and always mean that human
 intervention is needed. Ideally, each unit should also be designed to
 run concurrently.
+
+
+## Development
+
+To run the scenario:
+
+```
+$ ruby runner.rb
+```
+
+To test/play with the different parts, use the console:
+
+```
+bin/console
+```
+

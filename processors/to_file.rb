@@ -1,6 +1,8 @@
 require 'tempfile'
 
-class ToFile
+module ToFile
+
+  module_function
 
   # Saves the passed content to a file.
   # @param [#to_s] content The content to save to file.

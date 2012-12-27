@@ -9,8 +9,13 @@ Dir.glob("./scrapers/*.rb"){|file| require file }
 Dir.glob("./processors/*.rb"){|file| require file }
 
 FileUtils.mkdir_p('output')
-# TODO: use a scheduler and send to processors
+
+# Scrap
 episodes = FranceTVJeunesse.run
-summary = EpisodeSummary.new.process(episodes)
+# 1st processor
+filtered_episodes =  EpisodeFilter.process(episodes, "config/episode_filter.yml")
+# 2nd processor
+summary = EpisodeSummary.process(filtered_episodes)
+# 3rd processor
 destination = File.join(File.expand_path(File.dirname(__FILE__)), "output", "summary_#{Time.now.strftime("%Y-%m-%d")}.html")
-puts ToFile.new.process(summary, destination)
+`open #{ToFile.process(summary, destination)}`

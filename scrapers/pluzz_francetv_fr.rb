@@ -1,11 +1,13 @@
 require_relative 'utils'
+require_relative 'interfaces'
 require 'json'
+require 'date'
 
 module FranceTVJeunesse
 
   def self.run
     agent = Mechanize.new
-    url = "http://pluzz.francetv.fr/ajax/launchsearch/rubrique/jeunesse/datedebut/#{Time.now.strftime("%Y-%m-%dT00:00")}/datefin/#{Time.now.strftime("%Y-%m-%dT23:59")}/type/lesplusrecents/nb/100/"
+    url = "http://pluzz.francetv.fr/ajax/launchsearch/rubrique/jeunesse/datedebut/#{(Date.today - 1).strftime("%Y-%m-%dT00:00")}/datefin/#{Date.today.strftime("%Y-%m-%dT23:59")}/type/lesplusrecents/nb/200/"
     page = agent.get(url)
     episodes = fetch_episodes(page)
     STDERR << "Error scraping #{url}" if episodes.find{|e| e.failed?}
@@ -26,15 +28,10 @@ module FranceTVJeunesse
     end
     episodes
   end
-  
+
   class Episode
     include Scrapbook::Utils::Fetcher
-
-    ATTRIBUTES = [:show_name, :show_ref,
-                  :title, :url, :image_url, :broadcast_date, :notes ]
-
-    attr_accessor *ATTRIBUTES
-    attr_reader :failures
+    include EpisodeInterface
 
     def initialize(opts=nil)
       @failures = []
@@ -46,24 +43,12 @@ module FranceTVJeunesse
       self
     end
 
-    def to_s
-      "show: #{show_name} - show ref: #{show_ref} - title: #{title} - url: #{url} - notes: #{notes} - failures: #{self.failures.join("\n")}"
-    end
-
     def to_json
       hash = {}
-      ATTRIBUTES.each do |att|
+      EpisodeInterface::ATTRIBUTES.each do |att|
         hash[att] = self.send(att)
       end
       hash.to_json
-    end
-
-    def failed?
-      if self.url.nil? || !self.failures.empty?
-        true
-      else
-        false
-      end
     end
 
   end

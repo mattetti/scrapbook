@@ -1,8 +1,8 @@
 # Creates a formatted summary of a collection of episodes.
 #
-class EpisodeSummary
+module EpisodeSummary
 
-  attr_accessor :items
+  module_function
 
   # Converts the passed episode items in a summary
   # that is formatted based on the passed format.
@@ -11,7 +11,6 @@ class EpisodeSummary
   # supported)
   # @return [String]
   def process(items, format=:html)
-    self.items = items
     if format == :html
       html_header + "\n" + \
       items.sort_by(&:show_name).map{|i| html_episode_summary(i)}.join("\n") + \
@@ -48,7 +47,8 @@ class EpisodeSummary
                 "' /img></div>") if item.image_url}
         <a href="#{item.url}">
           #{(item.notes.nil? || item.notes == "") ? 'link' : item.notes }
-        </a>
+        </a> 
+        #{("<span> Show ref: " + item.show_ref + "</span>") if item.show_ref}
       </li>
     EOS
   end
