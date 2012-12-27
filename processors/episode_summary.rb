@@ -12,9 +12,14 @@ module EpisodeSummary
   # @return [String]
   def process(items, format=:html)
     if format == :html
-      html_header + "\n" + \
-      items.sort_by(&:show_name).map{|i| html_episode_summary(i)}.join("\n") + \
-      html_footer
+      output = html_header + "\n"
+      if items[0] && items[0].show_name
+        output += items.sort_by(&:show_name).map{|i| html_episode_summary(i)}.join("\n")
+      else
+        output += items.sort_by(&:title).map{|i| html_episode_summary(i)}.join("\n")
+      end
+      output += html_footer
+      output
     elsif format == :json
       items.map(&:to_json)
     else

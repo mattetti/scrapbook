@@ -13,7 +13,7 @@ module EpisodeInterface
   end
 
   def failed?
-    if self.url.nil? || !self.failures.empty?
+    if self.url.nil? || (self.failures && !self.failures.empty?)
       true
     else
       false
